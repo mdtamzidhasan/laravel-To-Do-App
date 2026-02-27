@@ -10,6 +10,10 @@ class AuthManager extends Controller
 {
     public function login()
     {
+        if(Auth::check()) {
+        return redirect()->route('home');
+        }
+    
         return view('auth.login');
     }
 
@@ -19,11 +23,13 @@ class AuthManager extends Controller
                 'email' => 'required|email',
                 'password' => 'required'
             ]);
+            $remember = $request->has('remember');
     
             // Authentication logic here (e.g., using Auth facade)
     
             $credentials = $request->only('email', 'password');
-            if(Auth::attempt($credentials)) {
+            if(Auth::attempt($credentials, $remember)) {
+                $request->session()->regenerate();
                 return redirect()->intended(route(('home')));
             }
             return redirect(route("login"))->with("Error", "Invalid Email or Password");
@@ -34,6 +40,8 @@ class AuthManager extends Controller
     public function logout()
     {
         Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
         return redirect(route("login"))->with("Success", "Logged out successfully.");
     }
 
@@ -49,14 +57,15 @@ class AuthManager extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email',
-            'password' => 'required|string|min:6'
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed'
         ]);
-
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
+        
+        $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password)
+        ]);
         if($user->save()) {
             return redirect(route("login"))->with("Success", "Account created successfully. Please login.");
         }

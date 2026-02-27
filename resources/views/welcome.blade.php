@@ -1,69 +1,136 @@
 @extends("layouts.default")
+
+@section("style")
+<style>
+body {
+    background: #f4f6f9;
+}
+
+.task-container {
+    max-width: 900px;
+    margin: auto;
+}
+
+.task-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
+    transition: 0.3s ease;
+}
+
+.task-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+.task-title {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.task-deadline {
+    font-size: 13px;
+    color: #6c757d;
+}
+
+.task-description {
+    font-size: 14px;
+    margin-top: 6px;
+    color: #555;
+}
+
+.task-actions a {
+    margin-left: 6px;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+.btn-complete {
+    background: #198754;
+    color: white;
+}
+
+.btn-edit {
+    background: #0d6efd;
+    color: white;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-complete:hover,
+.btn-edit:hover,
+.btn-delete:hover {
+    opacity: 0.85;
+}
+</style>
+@endsection
+
 @section("content")
-<main class="flex-shrink-0 mt-5">
-    @if(session()->has("success"))
-    <div class="alert alert-success">
-        {{ session()->get("success") }}
-    </div>
-    @endif
 
-    @if(session()->has("error"))
-    <div class="alert alert-danger">
-        {{ session("error") }}
-    </div>
-    @endif
-    <div class="container" style="max-width: 600px;">
-        <div class="my-3 p-3 bg-body rounded shadow-sm">
-            <h6 class="border-bottom pb-2 mb-0">List of Tasks</h6>
-            @foreach ($tasks as $task)
-            <div class="d-flex text-body-secondary pt-3"> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-right">
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M5 12l14 0" />
-                    <path d="M13 18l6 -6" />
-                    <path d="M13 6l6 6" />
-                </svg>
-                <div class="pb-3 mb-0 small lh-sm border-bottom w-100">
-                    <div class="d-flex justify-content-between"> <strong class="text-gray-dark">{{ $task->title }} |
-                            {{ $task->deadline }}
-                        </strong>
-                        <a href="{{ route('tasks.status.update', $task->id) }}" class="btn btn-success"><svg
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-check">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M5 12l5 5l10 -10" />
-                            </svg></a>
+<main class="mt-5">
+    <div class="task-container">
 
-                        <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-success"><svg
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415" />
-                                <path d="M16 5l3 3" />
-                            </svg></a>
+        <h4 class="mt-5 mb-4 fw-bold">📋 Task Dashboard</h4>
 
-
-
-                        <a href="{{ route('tasks.delete', $task->id) }}" class="btn btn-danger"><svg
-                                xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M4 7l16 0" />
-                                <path d="M10 11l0 6" />
-                                <path d="M14 11l0 6" />
-                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                            </svg></a>
-                    </div> <span class="d-block">{{ $task->description }}</span>
-                </div>
-            </div>
-            @endforeach
-            <div class="mt-3"> {{ $tasks->links() }}</div>
+        @if(session()->has("success"))
+        <div class="alert alert-success rounded-3">
+            {{ session()->get("success") }}
         </div>
+        @endif
+
+        @if(session()->has("error"))
+        <div class="alert alert-danger rounded-3">
+            {{ session("error") }}
+        </div>
+        @endif
+
+        @foreach ($tasks as $task)
+        <div class="task-card">
+
+            <div class="d-flex justify-content-between align-items-start">
+
+                <div>
+                    <div class="task-title">
+                        {{ $task->title }}
+                    </div>
+                    <div class="task-deadline">
+                        Deadline: {{ $task->deadline }}
+                    </div>
+                </div>
+
+                <div class="task-actions d-flex">
+                    <a href="{{ route('tasks.status.update', $task->id) }}" class="btn btn-complete btn-sm">
+                        ✔
+                    </a>
+
+                    <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-edit btn-sm">
+                        ✏
+                    </a>
+
+                    <a href="{{ route('tasks.delete', $task->id) }}" class="btn btn-delete btn-sm">
+                        🗑
+                    </a>
+                </div>
+
+            </div>
+
+            <div class="task-description">
+                {{ $task->description }}
+            </div>
+
+        </div>
+        @endforeach
+
+        <div class="mt-4">
+            {{ $tasks->links() }}
+        </div>
+
+    </div>
 </main>
+
 @endsection

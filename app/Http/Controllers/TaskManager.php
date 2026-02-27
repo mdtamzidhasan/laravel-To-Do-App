@@ -11,7 +11,7 @@ class TaskManager extends Controller
 
     public function listTask()
     {
-        $tasks = Task::where("user_id", auth()->user()->id)->where("status", NULL)->paginate(3);
+        $tasks = auth()->user()->tasks()->whereNull("status")->latest()->paginate(3);
         return view("welcome", compact("tasks"));
     }
     public function addTask()

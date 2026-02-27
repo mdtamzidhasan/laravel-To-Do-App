@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\AuthManager;
 use App\Http\Controllers\TaskManager;
+use App\Http\Controllers\ForgetPasswordManager;
 use Illuminate\Support\Facades\Route;
 use Termwind\Components\Raw;
 
@@ -32,3 +33,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('task/delete/{id}', [TaskManager::class, 'deleteTask'])->name('tasks.delete');
 });
+
+
+Route::get('forget-password', [ForgetPasswordManager::class, 'forgetPassword'])->name('forget.password');
+Route::post('forget-password', [ForgetPasswordManager::class, 'forgetPasswordPost'])->name('forget.password.post');
+Route::get('reset-password/{token}', [ForgetPasswordManager::class, 'resetPassword'])->name('reset.password');
+Route::post('reset-password', [ForgetPasswordManager::class, 'resetPasswordPost'])->name('reset.password.post');
