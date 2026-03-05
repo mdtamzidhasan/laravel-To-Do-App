@@ -112,7 +112,7 @@ a:hover {
             @enderror
         </div>
         <div class="form-check text-start my-3"> <input class="form-check-input" type="checkbox" name="remember" value="
-                remember-me" id="checkDefault"> <label class="form-check-label" for="checkDefault">
+                remember" id="checkDefault"> <label class="form-check-label" for="checkDefault">
                 Remember me
             </label> </div>
         @if(session()->has("success"))

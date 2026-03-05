@@ -20,19 +20,33 @@ Route::post('register', [AuthManager::class, 'registerPost'])->name('register.po
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [TaskManager::class, 'listTask'])->name('home');
-    
-    Route::get('task/add', [TaskManager::class, 'addTask'])->name('tasks.add');
-
-    Route::post('task/add', [TaskManager::class, 'addTaskPost'])->name('tasks.add.post');
-
-    Route::get('task/status/{id}', [TaskManager::class, 'updateTaskStatus'])->name('tasks.status.update');
 
     Route::get('task/edit/{id}', [TaskManager::class, 'taskEdit'])->name('tasks.edit');
 
     Route::post('task/edit/{id}', [TaskManager::class, 'taskEditPost'])->name('tasks.edit.post');
 
     Route::get('task/delete/{id}', [TaskManager::class, 'deleteTask'])->name('tasks.delete');
+
+     Route::middleware('role.user')->group(function () {
+        Route::get('task/add',  [TaskManager::class, 'addTask'])->name('tasks.add');
+        Route::post('task/add', [TaskManager::class, 'addTaskPost'])->name('tasks.add.post');
+
+        Route::get('task/status/{id}', [TaskManager::class, 'updateTaskStatus'])->name('tasks.status.update');
+    });
+
+    // ── Admin only routes ────────────────────────────────
+    Route::middleware('role.admin')->group(function () {
+        // Admin — specific user er tasks dekhbe
+        Route::get('admin/user/{userId}/tasks', [TaskManager::class, 'adminUserTasks'])->name('admin.user.tasks');
+    });
+
+     
 });
+
+    Route::get('/otp/verify',    [AuthManager::class, 'showOtpForm'])->name('otp.verify.form');
+    Route::post('/otp/verify',   [AuthManager::class, 'verifyOtp'])->name('otp.verify');
+    Route::post('/otp/resend',   [AuthManager::class, 'resendOtp'])->name('otp.resend');
+
 
 
 Route::get('forget-password', [ForgetPasswordManager::class, 'forgetPassword'])->name('forget.password');
